@@ -1,0 +1,88 @@
+class Student:
+    def __init__(self, name):
+        self.name = name
+        self.grades = {}
+
+    def view_grades(self):
+        return self.grades
+
+    def get_teacher_by_courseID(self, courseID):
+        for course, teacher in self.grades.items():
+            if course == courseID:
+                return teacher
+        return None
+
+
+class Teacher:
+    def __init__(self, name):
+        self.name = name
+        self.students = {}
+
+    def search_student_by_name(self, name):
+        for student, grades in self.students.items():
+            if student.name == name:
+                return student
+        return None
+
+    def search_student_by_courseID(self, courseID):
+        for student, grades in self.students.items():
+            if courseID in grades:
+                return student
+        return None
+
+    def update_grade(self, student_name, courseID, grade):
+        student = self.search_student_by_name(student_name)
+        if student:
+            student.grades[courseID] = grade
+
+
+class SchoolRecord:
+    def __init__(self):
+        self.students = {}
+        self.teachers = {}
+
+    def enroll(self, student_name):
+        student = Student(student_name)
+        self.students[student] = student.grades
+
+    def hire(self, teacher_name):
+        teacher = Teacher(teacher_name)
+        self.teachers[teacher] = teacher.students
+
+# Creating a SchoolRecord object
+school = SchoolRecord()
+
+# Enrolling students
+school.enroll('Alice')
+school.enroll('Bob')
+
+# Hiring teachers
+school.hire('Mr. Smith')
+school.hire('Mrs. Johnson')
+
+# Updating grades
+teacher = list(school.teachers.keys())[0]
+teacher.update_grade('Alice', 'CS-101', 'A')
+teacher.update_grade('Bob', 'CS-101', 'B')
+
+# Viewing grades
+student = list(school.students.keys())[0]
+grades = student.view_grades()
+print(grades)
+
+# Searching for a student by name
+teacher = list(school.teachers.keys())[0]
+found_student = teacher.search_student_by_name('Alice')
+if found_student:
+    print(f"Found student: {found_student.name}")
+else:
+    print("Student not found")
+
+# Searching for a student by course ID
+teacher = list(school.teachers.keys())[0]
+found_student = teacher.search_student_by_courseID('CS-101')
+if found_student:
+    print(f"Found student: {found_student.name}")
+else:
+    print("Student not found")
+
